@@ -24,4 +24,10 @@ app.use(express.json());
 app.use('/api', api);
 app.use(express.static(path.join(__dirname, 'public')));
 
+// THIS IS THE NEW LINE/BLOCK:
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+// END NEW LINE/BLOCK
+
 app.listen(process.env.PORT, () => console.log(`Server on ${process.env.PORT}`));
