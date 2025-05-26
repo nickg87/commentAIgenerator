@@ -12,13 +12,34 @@ export async function generateComment({
                                         rating,
                                         gender
                                       }) {
-  const prompt = `Scrie un comentariu natural, ca de la un om real, in limba romana (fara diacritice), pentru un produs.\n` +
-    `Comentariul trebuie sa para sincer, prietenos si sa reflecte o experienta reala (inventata) cu produsul\n` +
-    `Foloseste limbaj informal, dar clar. Evita formulari robotice (poate chiar cu greseli gramaticale din cand in cand). Poti adauga emotii, expresii personale sau comparatii.\n` +
-    `Produs: ${productName}\nBrand: ${brand}\nDetalii: ${productDetails}\n` +
-    `Rating dorit: ${rating} stele\nGen comentator: ${gender}\n` +
-    `Comentarii existente: ${existingComments.join(' | ') || 'niciunul'}\n` +
-    `Returneaza raspuns JSON exact cu cheile generatedComment si userName.`;
+  const prompt = `
+Scrie un comentariu natural, ca de la un om real, in limba romana (fara diacritice).
+• Comentariul trebuie sa para sincer, prietenos, cu emotii autentice.
+• Foloseste limbaj informal, dar clar (accepta mici greseli gramaticale).
+• NU folosi ton robotizat!
+
+REGULI in functie de rating:
+  – 5 ★: entuziast, super pozitiv, minim 2 pro‑uri concrete.
+  – 4 ★: pozitiv dar cu 1 mic defect mentionat.
+  – 3 ★: ton neutru, balanceaza plusuri si minusuri.
+  – 2 ★: dezamagit, mentioneaza 2 probleme clare.
+  – 1 ★: foarte nemultumit, ton frustrat, explica de ce e slab.
+
+Date produs
+  • Nume: ${productName}
+  • Brand: ${brand}
+  • Detalii: ${productDetails}
+
+Rating dorit: ${rating} stele
+Gen comentator: ${gender}
+Comentarii existente: ${existingComments.join(' | ') || 'niciunul'}
+
+Returneaza DOAR JSON strict cu cheile:
+  {
+    "generatedComment": "...",
+    "userName": "..."
+  }
+`.trim();
 
   const completion = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
