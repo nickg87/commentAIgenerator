@@ -7,14 +7,14 @@ const init = async () => {
   let connection;
 
   if (process.env.IS_LIVE_SERVER) {
-    const connection = await mysql.createConnection({
+    connection = await mysql.createConnection({
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME
     });
   } else {
-    const connection = await mysql.createConnection({
+    connection = await mysql.createConnection({
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
