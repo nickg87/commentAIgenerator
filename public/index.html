@@ -1,0 +1,66 @@
+<!--// public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <title>Comment POC</title>
+</head>
+<body class="p-4">
+<h1 class="mb-4">Comment Generator POC</h1>
+<section class="mb-5 border p-3 rounded">
+    <h3>Generate Comment</h3>
+    <form id="genForm">
+        <div class="row g-2">
+            <div class="col-md-3"><input class="form-control" name="clientId" placeholder="clientId" value="1" required></div>
+            <div class="col-md-3"><input class="form-control" name="siteId" placeholder="siteId" value="1" required></div>
+            <div class="col-md-3"><input class="form-control" name="productId" placeholder="productId" value="2695" required></div>
+            <div class="col-md-3"><input class="form-control" name="productName" placeholder="productName" value="Gard viu rasinoase Cupressocyparis leylandii 100-125 cm clt 7,5 l" required></div>
+            <div class="col-md-4"><input class="form-control" name="brand" placeholder="brand" value="Instalsol"></div>
+            <div class="col-md-4"><textarea class="form-control" name="productDetails" placeholder="productDetails">
+                Cupressocyparis leylandii este un arbust sau un copac conic, cu o crestere rapida si inalt, ajungand sa atinga inaltimi considerabile, de pana la 20-35 de metri. Prefera soluri bine drenate si umede, cu o expunere la soare plin sau la semiumbra.
+            </textarea></div>
+            <div class="col-md-2"><input class="form-control" name="rating" type="number" min="1" max="5" value="5"></div>
+            <div class="col-md-2"><select class="form-select" name="gender"><option value="male">male</option><option value="female">female</option></select></div>
+        </div>
+        <button class="btn btn-primary mt-3">Generate</button>
+    </form>
+    <div id="result" class="mt-3"></div>
+</section>
+
+<section class="border p-3 rounded">
+    <h3>Comments History</h3>
+    <table class="table" id="commentsTable">
+        <thead><tr><th>ID</th><th>Client</th><th>Site</th><th>Comment</th><th>Date</th></tr></thead>
+        <tbody></tbody>
+    </table>
+</section>
+
+<script>
+  async function refreshComments() {
+    const res = await fetch('/api/comments');
+    const data = await res.json();
+    const tbody = document.querySelector('#commentsTable tbody');
+    tbody.innerHTML = data.map(c => `<tr><td>${c.id}</td><td>${c.Request.Client?.name || c.Request.clientId}</td><td>${c.Request.Site?.url || c.Request.siteId}</td><td>${c.comment}</td><td>${new Date(c.createdAt).toLocaleString()}</td></tr>`).join('');
+  }
+
+  document.getElementById('genForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const formData = Object.fromEntries(new FormData(e.target));
+    formData.existingComments = [];
+    const res = await fetch('/api/generate-comment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    const json = await res.json();
+    document.getElementById('result').innerHTML = `<strong>${json.userName}</strong>: ${json.generatedComment}<br><small>${JSON.stringify(json.usage)} tokens</small>`;
+    await refreshComments();
+  });
+
+  refreshComments();
+</script>
+</body>
+</html>
