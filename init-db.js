@@ -4,13 +4,25 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const init = async () => {
-  const connection = await mysql.createConnection({
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    socketPath: process.env.DB_SOCKET_PATH,
-    multipleStatements: true
-  });
+  let connection;
+
+  if (process.env.IS_LIVE_SERVER) {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME
+    });
+  } else {
+    const connection = await mysql.createConnection({
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      socketPath: process.env.DB_SOCKET_PATH,
+      multipleStatements: true
+    });
+  }
+
 
   try {
     await connection.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME}\`;`);
