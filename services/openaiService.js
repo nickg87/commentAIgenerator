@@ -16,7 +16,8 @@ export async function generateComment({
 Scrie un comentariu natural, ca de la un om real, in limba romana (fara diacritice).
 • Comentariul trebuie sa para sincer, prietenos, cu emotii autentice.
 • Foloseste limbaj informal, dar clar (accepta mici greseli gramaticale).
-• Foarte important sa para autentic uman. Deci foloseste jargon.
+• Foarte important sa para autentic uman. Deci foloseste jargon.  Si inceraca sa nu te folosesti neaparat de titlu produsului sau descriere. Aici alegerea fiind data de contextul
+  comentariului pe care-l generezi.
 • NU folosi ton robotizat!
 
 REGULI in functie de rating:
